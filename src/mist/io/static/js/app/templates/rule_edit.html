@@ -115,8 +115,8 @@
 
         <div data-role="content">
 
-            <fieldset data-role="controlgroup" data-mini="true" data-type="horizontal">
-                <legend>Alert level:</legend>
+            <label>Alert level:</label>
+            <fieldset data-role="controlgroup" data-type="horizontal">
                 <input name="alert-level" id="alert-level-info" value="on" checked="checked" type="radio"
                     {{action "alertLevelChanged" "info" on="change" target="view"}}>
                 <label for="alert-level-info">Info</label>
@@ -134,10 +134,9 @@
             <label>Emails notified:</label>
             {{view Ember.TextArea valueBinding="view.newEmails" name="rule-emails"}}
 
-            <fieldset data-role="controlgroup" data-mini="true">
+            <fieldset data-role="controlgroup">
             <label>
                 <input id="alert-reminders"
-                    data-mini="true"
                     checked="true"
                     name="alert-reminders"
                     type="checkbox">
@@ -145,7 +144,7 @@
             </label>
 
             <label>
-                <input data-mini="true" name="alert-send-ok" id="alert-send-ok" type="checkbox">
+                <input name="alert-send-ok" id="alert-send-ok" type="checkbox">
                 Notify when closed
             </label>
             </fieldset>

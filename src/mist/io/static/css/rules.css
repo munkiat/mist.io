@@ -164,3 +164,10 @@
 .rules-container input::-webkit-inner-spin-button {
     -webkit-appearance: none !important;
 }
+
+#rule-alert .ui-content > label {
+    margin-top: 15px;
+}
+#rule-alert .ui-content > label:first-child {
+    margin-top: 0;
+}
