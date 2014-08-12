@@ -47,6 +47,8 @@ def given_backend(context, backend):
         creds = "LINODE"
     elif "docker" in backend.lower():
         creds = "DOCKER"
+    elif "digitalocean" in backend.lower():
+        creds = "DIGITALOCEAN"
     else:
         assert False, u'Could not find credentials for %s' % backend
 
@@ -81,7 +83,7 @@ def backend_creds(context, backend):
         username_input.send_keys(context.credentials['HP']['username'])
         pass_input = context.browser.find_element_by_id("new-backend-second-field")
         pass_input.send_keys(context.credentials['HP']['password'])
-        tenant_input = context.browser.find_element_by_id("new-backend-openstack-tenant")
+        tenant_input = context.browser.find_element_by_id("new-backend-hpcloud-tenant")
         tenant_input.send_keys(context.credentials['HP']['tenant'])
     elif "SOFTLAYER" in backend:
         api_key_input = context.browser.find_element_by_id("new-backend-first-field")
@@ -106,30 +108,38 @@ def backend_creds(context, backend):
     elif "DOCKER" in backend:
         username_input = context.browser.find_element_by_id("new-backend-docker-url")
         username_input.send_keys(context.credentials['DOCKER']['host'])
+    elif "DIGITALOCEAN" in backend:
+        username_input = context.browser.find_element_by_id("new-backend-first-field")
+        username_input.send_keys(context.credentials['DIGITALOCEAN']['client_id'])
+        api_key_input = context.browser.find_element_by_id("new-backend-second-field")
+        api_key_input.send_keys(context.credentials['DIGITALOCEAN']['api_key'])
 
 
 @when(u'I rename the backend to "{new_name}"')
 def rename_backend(context, new_name):
-    popup = context.browser.find_element_by_id("edit-backend-popup")
+    popup = context.browser.find_element_by_id("backend-edit")
     textfield = popup.find_element_by_class_name("ui-input-text").find_element_by_tag_name("input")
     for i in range(20):
         textfield.send_keys(u'\ue003')
 
     for letter in new_name:
         textfield.send_keys(letter)
-        sleep(1)
+        sleep(0.7)
 
 
 @then(u'the "{backend}" backend should be added within {seconds} seconds')
 def backend_added(context, backend, seconds):
     end_time = time() + int(seconds)
     while time() < end_time:
-        backends = context.browser.find_element_by_id("backend-buttons")
-        backend_buttons = backends.find_elements_by_class_name("ui-btn")
-        for button in backend_buttons:
-            if backend in button.text:
-                return
-        sleep(2)
+        try:
+            backends = context.browser.find_element_by_id("backend-buttons")
+            backend_buttons = backends.find_elements_by_class_name("ui-btn")
+            for button in backend_buttons:
+                if backend in button.text:
+                    return
+            sleep(2)
+        except:
+            sleep(2)
 
     assert False, u'%s is not added within %s seconds' %(backend, seconds)
 

@@ -1,4 +1,4 @@
-define('app/controllers/keys', ['app/models/key'],
+define('app/controllers/keys', ['app/models/key' , 'ember'],
     //
     //  Keys Controller
     //
@@ -59,21 +59,21 @@ define('app/controllers/keys', ['app/models/key'],
             },
 
 
-            addKey: function(keyId, keyPrivate, callback) {
+            addKey: function(args) {
                 var that = this;
                 this.set('addingKey', true);
                 Mist.ajax.PUT('/keys', {
-                    'id': keyId,
-                    'priv': keyPrivate
-                }).success(function(key) {
+                    'id': args.keyId,
+                    'priv': args.keyPrivate
+                }).success(function (key) {
                     that._addKey(key);
-                }).error(function(message) {
+                }).error(function (message) {
                     Mist.notificationController.notify(message);
-                }).complete(function(success, key) {
+                }).complete(function (success, key) {
                     that.set('addingKey', false);
-                    if (callback) callback(success, key);
+                    if (args.callback)
+                        args.callback(success, that.getKey(key.id));
                 });
-                keyPrivate = null;
             },
 
 
@@ -162,15 +162,16 @@ define('app/controllers/keys', ['app/models/key'],
             },
 
 
-            generateKey: function(callback) {
+            generateKey: function(args) {
                 var that = this;
                 this.set('generatingKey', true);
                 Mist.ajax.POST('/keys', {
-                }).error(function() {
-                    Mist.notificationController.notify('Failed to generate key');
-                }).complete(function(success, key) {
+                }).error(function () {
+                    Mist.notificationController.notify(
+                        'Failed to generate key');
+                }).complete(function (success, key) {
                     that.set('generatingKey', false);
-                    if (callback) callback(success, key.priv);
+                    if (args.callback) args.callback(success, key.priv);
                 });
             },
 
@@ -267,7 +268,8 @@ define('app/controllers/keys', ['app/models/key'],
 
             _addKey: function(key) {
                 Ember.run(this, function() {
-                    this.content.pushObject(Key.create(key));
+                    if (this.keyExists(key.id)) return;
+                    this.content.addObject(Key.create(key));
                     this.trigger('onKeyAdd');
                 });
             },
@@ -283,7 +285,8 @@ define('app/controllers/keys', ['app/models/key'],
 
             _renameKey: function(keyId, newKeyId) {
                 Ember.run(this, function() {
-                    this.getKey(keyId).set('id', newKeyId);
+                    if (this.keyExists(keyId))
+                        this.getKey(keyId).set('id', newKeyId);
                     this.trigger('onKeyRename');
                 });
             },

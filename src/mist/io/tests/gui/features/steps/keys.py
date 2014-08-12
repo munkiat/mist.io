@@ -7,9 +7,10 @@ def fill_key_name(context, text):
     if "randomly_created" in text:
         text = context.random_name
 
-    textfield = context.browser.find_element_by_id("add-key-id")
-    for letter in text:
-        textfield.send_keys(letter)
+    textfield = context.browser.find_element_by_id("key-add-id")
+    textfield.send_keys(text)
+    # for letter in text:
+    #     textfield.send_keys(letter)
 
 
 @when(u'I fill "{text}" as new key name')
