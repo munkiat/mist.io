@@ -115,14 +115,16 @@
 
         <div data-role="content">
 
-            <!-- TODO: Change to horizontal controllgroup radio widget -->
-            <fieldset data-role="controlgroup" data-mini="true">
+            <fieldset data-role="controlgroup" data-mini="true" data-type="horizontal">
                 <legend>Alert level:</legend>
-                <input name="alert-level" id="alert-level-info" value="on" checked="checked" type="radio">
+                <input name="alert-level" id="alert-level-info" value="on" checked="checked" type="radio"
+                    {{action "alertLevelChanged" "info" on="change" target="view"}}>
                 <label for="alert-level-info">Info</label>
-                <input name="alert-level" id="alert-level-warn" value="off" type="radio">
+                <input name="alert-level" id="alert-level-warn" value="off" type="radio"
+                    {{action "alertLevelChanged" "warn" on="change" target="view"}}>
                 <label for="alert-level-warn">Warn</label>
-                <input name="alert-level" id="alert-level-critical" value="other" type="radio">
+                <input name="alert-level" id="alert-level-critical" value="other" type="radio"
+                    {{action "alertLevelChanged" "critical" on="change" target="view"}}>
                 <label for="alert-level-critical">Critical</label>
             </fieldset>
 
@@ -132,6 +134,7 @@
             <label>Emails notified:</label>
             {{view Ember.TextArea valueBinding="view.newEmails" name="rule-emails"}}
 
+            <fieldset data-role="controlgroup" data-mini="true">
             <label>
                 <input id="alert-reminders"
                     data-mini="true"
@@ -145,6 +148,7 @@
                 <input data-mini="true" name="alert-send-ok" id="alert-send-ok" type="checkbox">
                 Notify when closed
             </label>
+            </fieldset>
 
             <div data-role="controlgroup" class="btn-full ok-cancel" data-type="horizontal">
                 <a class="ui-btn ui-btn-a" {{action "backAlertClicked" target="view"}}>Back</a>

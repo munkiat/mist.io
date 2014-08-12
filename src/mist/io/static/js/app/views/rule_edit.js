@@ -20,6 +20,7 @@ define('app/views/rule_edit', ['app/views/controlled'],
 
             rule: null,
             metrics: [],
+            newLevel: null,
             newEmails: null,
             newCommand: null,
 
@@ -61,6 +62,7 @@ define('app/views/rule_edit', ['app/views/controlled'],
                 Ember.run.later(this, function () {
                     Mist.ruleEditController.open(this.rule, 'alert');
                     this.set('newEmails', Mist.email);
+                    this.set('newLevel', 'info');
                 }, 500);
             },
 
@@ -87,6 +89,19 @@ define('app/views/rule_edit', ['app/views/controlled'],
                 Ember.run.later(this, function () {
                     Mist.ruleEditController.open(this.rule, 'action');
                 }, 500);
+            },
+
+
+            //
+            //
+            //  Pseudo-Private Methods
+            //
+            //
+
+
+            _updateLevelCheckbox: function () {
+                $('#rule-alert label').removeClass('ui-btn-d');
+                $('#rule-alert label[for="alert-level-' + this.newLevel+'"]').addClass('ui-btn-d');
             },
 
 
@@ -132,6 +147,11 @@ define('app/views/rule_edit', ['app/views/controlled'],
                 },
 
 
+                alertLevelChanged: function (level) {
+                    this.set('newLevel', level);
+                },
+
+
                 saveAlertClicked: function () {
                     Mist.ruleEditController.edit({
                         action: 'alert',
@@ -156,7 +176,19 @@ define('app/views/rule_edit', ['app/views/controlled'],
                 backCommandClicked: function () {
                     this.closeCommandEditor();
                 }
-            }
+            },
+
+
+            //
+            //
+            //  Observers
+            //
+            //
+
+
+            levelObserver: function () {
+                Ember.run.once(this, '_updateLevelCheckbox');
+            }.observes('newLevel'),
         });
     }
 );
