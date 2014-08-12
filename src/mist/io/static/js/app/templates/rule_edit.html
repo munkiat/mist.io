@@ -115,6 +115,7 @@
 
         <div data-role="content">
 
+            <!-- TODO: Change to horizontal controllgroup radio widget -->
             <fieldset data-role="controlgroup" data-mini="true">
                 <legend>Alert level:</legend>
                 <input name="alert-level" id="alert-level-info" value="on" checked="checked" type="radio">
@@ -125,11 +126,11 @@
                 <label for="alert-level-critical">Critical</label>
             </fieldset>
 
-            <label>Optional Message:</label>
+            <label>Optional message:</label>
             {{view Ember.TextArea name="rule-message"}}
 
-            <label>Emails:</label>
-            {{view Ember.TextArea name="rule-emails"}}
+            <label>Emails notified:</label>
+            {{view Ember.TextArea valueBinding="view.newEmails" name="rule-emails"}}
 
             <label>
                 <input id="alert-reminders"
@@ -142,7 +143,7 @@
 
             <label>
                 <input data-mini="true" name="alert-send-ok" id="alert-send-ok" type="checkbox">
-                Send "ok" when value restores to normal
+                Notify when closed
             </label>
 
             <div data-role="controlgroup" class="btn-full ok-cancel" data-type="horizontal">

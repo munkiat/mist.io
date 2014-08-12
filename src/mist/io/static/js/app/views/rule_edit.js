@@ -20,6 +20,7 @@ define('app/views/rule_edit', ['app/views/controlled'],
 
             rule: null,
             metrics: [],
+            newEmails: null,
             newCommand: null,
 
 
@@ -59,6 +60,7 @@ define('app/views/rule_edit', ['app/views/controlled'],
                 Mist.ruleEditController.close('action');
                 Ember.run.later(this, function () {
                     Mist.ruleEditController.open(this.rule, 'alert');
+                    this.set('newEmails', Mist.email);
                 }, 500);
             },
 
