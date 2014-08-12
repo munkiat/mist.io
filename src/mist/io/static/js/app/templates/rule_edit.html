@@ -125,17 +125,25 @@
                 <label for="alert-level-critical">Critical</label>
             </fieldset>
 
+            <label>Optional Message:</label>
+            {{view Ember.TextArea name="rule-message"}}
+
+            <label>Emails:</label>
+            {{view Ember.TextArea name="rule-emails"}}
+
             <label>
-                <!-- Default on -->
-                <input data-mini="true" name="alert-reminders" id="alert-reminders" type="checkbox">Send reminders
+                <input id="alert-reminders"
+                    data-mini="true"
+                    checked="true"
+                    name="alert-reminders"
+                    type="checkbox">
+                Send reminders
             </label>
+
             <label>
                 <input data-mini="true" name="alert-send-ok" id="alert-send-ok" type="checkbox">
                 Send "ok" when value restores to normal
             </label>
-
-            <label>Optional message to be included:</label>
-            {{view Ember.TextArea name="rule-message"}}
 
             <div data-role="controlgroup" class="btn-full ok-cancel" data-type="horizontal">
                 <a class="ui-btn ui-btn-a" {{action "backAlertClicked" target="view"}}>Back</a>
