@@ -53,6 +53,7 @@ define('app/views/rule', ['app/views/templated', 'ember'],
 
 
             load: function () {
+                this.showAdvancedCondition();
                 this.updateTextValues();
                 Ember.run.next(this, function () {
                     $('#'+this.elementId).trigger('create');
@@ -106,6 +107,34 @@ define('app/views/rule', ['app/views/templated', 'ember'],
             },
 
 
+            showAdvancedCondition: function (userClicked) {
+
+                var el = '#' + this.elementId;
+
+                // If user clicked the button to show the advanced condition,
+                // use fade in and fade out for a smooth transition
+                if (userClicked) {
+                    $(el + ' .rule-more').fadeOut(200, function () {
+                        $(el + ' .advanced-condition').fadeIn();
+                    });
+                    return;
+                }
+
+                // Show advanced condition if rule does not have the default values
+                // Defaults:
+                // "aggregate": "all"
+                // "timeWindow": "0"
+
+                var isDefault = this.rule.aggregate.value == 'all' &&
+                                this.rule.timeWindow == 0;
+
+                if (!isDefault) {
+                    $(el + ' .rule-more').hide(0);
+                    $(el + ' .advanced-condition').show(0);
+                }
+            },
+
+
             //
             //
             //  Actions
@@ -141,10 +170,7 @@ define('app/views/rule', ['app/views/templated', 'ember'],
 
 
                 openAdvancedCondition: function () {
-                    var el = '#' + this.elementId;
-                    $(el + ' .rule-more').fadeOut(200, function () {
-                        $(el + ' .advanced-condition').fadeIn();
-                    });
+                    this.showAdvancedCondition(true);
                 },
             },
 
