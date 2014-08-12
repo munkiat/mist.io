@@ -171,3 +171,6 @@
 #rule-alert .ui-content > label:first-child {
     margin-top: 0;
 }
+#rule-alert .ok-canel {
+    margin-top: 12px;
+}
