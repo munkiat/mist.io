@@ -9,25 +9,15 @@ except ImportError:
 
 @when(u'I visit mist.io')
 def visit(context):
-    if not LOCAL:
-        end_time = time() + 120
+    visit_route(context, '/')
 
-        while time() < end_time:
-            try:
-                context.browser.get(context.mist_url)
-                splash_loadout(context)
-                return
-            except:
-                sleep(5)
-    else:
-        end_time = time() + 60
-        while time() < end_time:
-            try:
-                context.browser.get(context.mist_url)
-                splash_loadout(context)
-                return
-            except:
-                sleep(5)
+
+@when(u'I visit "{route}"')
+def visit_route(context, route):
+    # Navigate the browser to the requested route
+    context.browser.get('%s/#%s' % (context.mist_url, route))
+    # Wait for the splash screen to disappear
+    splash_loadout(context)
 
 
 @when(u'I wait for {seconds} seconds')
@@ -37,19 +27,13 @@ def wait(context, seconds):
 
 @when(u'I click the "{text}" button')
 def click_button(context, text):
-    try:
-        buttons = context.browser.find_elements_by_class_name("ui-btn")
-        for button in buttons:
-            if button.text == text:
-                button.click()
-                return
-    except:
-        sleep(1)
-        buttons = context.browser.find_elements_by_class_name("ui-btn")
-        for button in buttons:
-            if button.text == text:
-                button.click()
-                return
+    sleep(0.5)
+    buttons = context.browser.find_elements_by_class_name("ui-btn")
+    for button in buttons:
+        if button.text == text:
+            button.click()
+            sleep(1)
+            return
 
     assert False, u'Could not find %s button' % text
 
@@ -64,6 +48,20 @@ def click_button(context, text):
 
     assert False, u'Could not find button that contains %s' % text
 
+
+@when(u'I check the button that contains "{text}"')
+def check_button(context, text):
+    buttons = context.browser.find_elements_by_class_name("ui-btn")
+    for button in buttons:
+        if text in button.text:
+            # Get parent
+            parent = button.find_element_by_xpath('..')
+            # Get checkbox
+            checkbox = parent.find_elements_by_tag_name('label')[0]
+            checkbox.click()
+            return
+
+    assert False, u'Could not find button that contains %s' % text
 
 
 @when(u'I click the "{text}" button inside the "{popup}" popup')
@@ -106,6 +104,30 @@ def click_button_within_panel(context, text, panel_title):
     assert False, u'Could not find %s button inside %s panel' % (text, panel_title)
 
 
+@then(u'the header should be "{text}" within {timeout} seconds')
+def assert_header_is_within_timeout(context, text, timeout):
+
+    for i in range(int(timeout) * 2):
+        header = context.browser.find_elements_by_class_name('ui-header')[0]
+        title = header.find_elements_by_class_name('ui-title')[0]
+        if text == title.text:
+            return
+        sleep(0.5)
+
+    assert False, u'Page header is not %s' % text
+
+
+@then(u'the title should be "{text}" within {timeout} seconds')
+def assert_title_is_within_timeout(context, text, timeout):
+
+    for i in range(int(timeout) * 2):
+        if text == context.browser.title:
+            return
+        sleep(0.5)
+
+    assert False, u'Page title is not %s' % text
+
+
 @then(u'the title should be "{text}"')
 def assert_title_is(context, text):
     assert text == context.browser.title
@@ -117,11 +139,53 @@ def assert_title_contains(context, text):
 
 
 def splash_loadout(context, timeout=20):
-    end_time = time() + timeout
-    while time() < end_time:
-        splash_page = context.browser.find_element_by_id("splash")
-        display = splash_page.value_of_css_property("display")
+
+    for i in range(timeout):
+        splash_screen = context.browser.find_element_by_id('splash')
+        display = splash_screen.value_of_css_property('display')
         if 'none' in display:
             return
-        sleep(2)
+        sleep(1)
+
     assert False, u'Page took longer than %s seconds to load' % str(timeout)
+
+
+def erase_text(element, timeout=10):
+
+    for i in range(timeout * 2):
+
+        # Send backspaces to delete any existing text
+        for i in range(len(get_text(element))):
+            element.send_keys(u'\ue003')
+
+        # Check if textfield is empty
+        if not get_text(element):
+            return
+
+        sleep(0.5)
+
+    assert False, u"Failed to erase element's text"
+
+
+def fill_text(element, text, timeout=10):
+
+    for i in range(timeout * 2):
+
+        # Erase any pre-existing text
+        erase_text(element)
+
+        # Fill the chars of the text one by one
+        for char in text:
+            element.send_keys(char)
+
+        # Check if the text field contains the wanted text
+        if get_text(element) == text:
+            return
+
+        sleep(0.5)
+
+    assert False, u"Failed to fill element with text"
+
+
+def get_text(element):
+    return element.text or element.get_attribute('value')
