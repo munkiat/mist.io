@@ -135,10 +135,10 @@ define('app/controllers/images', ['app/models/image'],
             toggleImageStar: function (image, callback) {
                 var that = this;
                 Mist.ajax.POST('/backends/' + this.backend.id + '/images/' + image.id, {
-                }).success(function (star) {
-                    if (!that.imageExists(image.id))
+                }).success(function (success, star) {
+                    if (star)
                         that._addImage(image);
-                    that._toggleImageStar(image.id, star);
+                    that._toggleImageStar(image, star);
                 }).error(function () {
                     Mist.notificationController.notify('Failed to (un)star image');
                 }).complete(function (success, star) {
@@ -210,6 +210,7 @@ define('app/controllers/images', ['app/models/image'],
 
             _addImage: function (image) {
                 Ember.run(this, function () {
+                    if (this.imageExists(image.id)) return;
                     image.backend = this.backend;
                     this.content.addObject(Image.create(image));
                     this.trigger('onImageAdd');
@@ -217,9 +218,9 @@ define('app/controllers/images', ['app/models/image'],
             },
 
 
-            _toggleImageStar: function (imageId, star) {
+            _toggleImageStar: function (image, star) {
                 Ember.run(this, function () {
-                    this.getImage(imageId).set('star', star);
+                    image.set('star', star);
                     this.trigger('onImageStarToggle');
                 });
             },

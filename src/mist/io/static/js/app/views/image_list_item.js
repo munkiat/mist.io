@@ -44,12 +44,7 @@ define('app/views/image_list_item', ['app/views/list_item'],
 
 
                 toggleImageStar: function () {
-                    var that = this;
-                    this.image.toggle(function (success, star) {
-                        if (!success) {
-                            that.image.set('star', !that.image.star);
-                        }
-                    });
+                    this.image.toggle();
                 },
 
 

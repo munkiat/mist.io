@@ -1,47 +1,50 @@
 from behave import *
 from time import time, sleep
+from general import fill_text
 
+@when(u'I wait until images are loaded')
+def wait_images_load(context, timeout=30):
+    """Wait until images are loaded in image list view. Count image list items
+    to determine that.
+    """
 
-@then(u'Images counter should be greater than {counter_number} within {seconds} seconds')
-def images_counter_loaded(context, counter_number, seconds):
-    elements = context.browser.find_elements_by_tag_name("li")
-    for element in elements:
-        if "Images" in element.text:
-            break
+    images_list = context.browser.find_element_by_id("image-list")
 
-    end_time = time() + int(seconds)
-    while time() < end_time:
-        counter_span = element.find_element_by_tag_name("span")
-        counter = int(counter_span.text)
-
-        if counter > int(counter_number):
-            return
-        else:
-            sleep(2)
-
-    assert False, u'The counter did not say that more than %s images were loaded' % counter_number
-
-
-@then(u'Images list should be loaded within {seconds} seconds')
-def images_loaded(context, seconds):
-    end_time = time() + int(seconds)
-    while time() < end_time:
-        images_list = context.browser.find_element_by_id("image-list")
+    for i in range(timeout * 2):
         images = images_list.find_elements_by_tag_name("li")
-        if len(images) > 0:
+        if len(images):
             return
-        sleep(2)
+        sleep(0.5)
 
-    assert False, u'Images not loaded within %s seconds' % seconds
+    assert False, u'Images failed to load'
 
 
-@then(u'there should be starred Images')
-def starred_images_loaded(context):
-    starred_images = context.browser.find_elements_by_class_name("ui-checkbox-on")
-    if len(starred_images) > 0:
-        return
-    else:
-        assert False, u'No starred images found'
+@when(u'I type "{text}" into the images filter')
+def fill_keys_filter(context, text):
+    """Fill the filter in the images list view with the given text"""
+
+    search_input = context.browser.find_element_by_id("search-term-input")
+    fill_text(search_input, text)
+
+
+@then(u'there should be starred images')
+def starred_images_exist(context):
+    starred = context.browser.find_elements_by_class_name("ui-checkbox-on")
+    assert len(starred), u'No starred images found'
+
+
+@then(u'the first image should contain "{text}"')
+def first_image_contains_text(context, text, timeout=30):
+
+    images_list = context.browser.find_element_by_id("image-list")
+
+    for i in range(timeout):
+        first_image = images_list.find_elements_by_tag_name("li")[0]
+        if text in first_image.text:
+            return
+        sleep(1)
+
+    assert False, u'First image does not contain %s' % text
 
 
 @then(u'an Image that contains "{text}" should be starred')
@@ -62,14 +65,6 @@ def assert_starred_image(context, text):
             return
 
     assert False, u'No starred image found containing: %s ' % text
-
-
-@when(u'I search for a "{text}" Image')
-def search_image(context, text):
-    search_bar = context.browser.find_element_by_id("search-term-input")
-    for letter in text:
-        search_bar.send_keys(letter)
-    sleep(2)
 
 
 @when(u'I star an Image that contains "{text}"')

@@ -14,18 +14,9 @@ def load_backend_credentials(context):
 
 @given(u'"{backend}" backend added')
 def given_backend(context, backend):
-    end_time = time() + 5
-    while time() < end_time:
-        try:
-            backends = context.browser.find_element_by_id("backend-buttons")
-            backend_buttons = backends.find_elements_by_class_name("ui-btn")
-            if backend_buttons:
-                break
-        except:
-            pass
 
-        sleep(2)
-
+    backends = context.browser.find_element_by_id("backend-buttons")
+    backend_buttons = backends.find_elements_by_class_name("ui-btn")
     if backend_buttons:
         for button in backend_buttons:
             if backend in button.text:
