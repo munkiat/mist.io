@@ -42,4 +42,3 @@ Feature: Image List Page
     And I wait until images are loaded
     Then the first image should contain "django"
     When I check the button that contains "django"
-    And I wait for 20 seconds
