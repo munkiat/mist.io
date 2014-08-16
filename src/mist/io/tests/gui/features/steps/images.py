@@ -3,18 +3,18 @@ from time import time, sleep
 from general import fill_text
 
 @when(u'I wait until images are loaded')
-def wait_images_load(context, timeout=30):
+def wait_images_load(context, timeout=60):
     """Wait until images are loaded in image list view. Count image list items
     to determine that.
     """
 
     images_list = context.browser.find_element_by_id("image-list")
 
-    for i in range(timeout * 2):
+    for i in range(timeout):
         images = images_list.find_elements_by_tag_name("li")
         if len(images):
             return
-        sleep(0.5)
+        sleep(1)
 
     assert False, u'Images failed to load'
 
