@@ -1078,3 +1078,5 @@ function error() {
     if (LOGLEVEL > 0)
         console.error.apply(console, arguments);
 }
+
+console.log('test');
