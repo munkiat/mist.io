@@ -1079,4 +1079,6 @@ function error() {
         console.error.apply(console, arguments);
 }
 
-console.log('test');
+function yo () {
+    log('yo');
+}
