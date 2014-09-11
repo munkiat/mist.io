@@ -1,9 +1,3 @@
-#
-# W A R N I N G !
-#
-# This feature is not ready yet and it can't be completed until the application
-# is actually fixed. Star/unstar images is broken on the frontend and backend
-
 @image-list-page
 Feature: Image List Page
 
