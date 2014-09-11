@@ -34,8 +34,8 @@ from mist.io.exceptions import *
 
 from mist.io.helpers import trigger_session_update
 from mist.io.helpers import amqp_publish_user
-from mist.io.tasks import run_deploy_script
-from mist.io.tasks import ssh_command as async_ssh_command
+
+from mist.io import tasks
 
 ## # add curl ca-bundle default path to prevent libcloud certificate error
 import libcloud.security
@@ -772,8 +772,8 @@ def create_machine(user, backend_id, key_id, machine_name, location_id,
     associate_key(user, key_id, backend_id, node.id, port=ssh_port)
 
     if script:
-        from mist.io.tasks import run_deploy_script
-        run_deploy_script.delay(user.email, backend_id, node.id, script, key_id)
+        tasks.run_deploy_script.delay(user.email, backend_id, node.id,
+                                      script, key_id)
 
     return {'id': node.id,
             'name': node.name,
@@ -1021,9 +1021,6 @@ def _create_machine_nephoscale(conn, key_name, private_key, public_key, script,
                 server_key=server_key,
                 console_key=console_key,
                 ssh_key=tmp_key_path,
-                connect_attempts=20,
-                ex_wait=True,
-                deploy=deploy_script
             )
         except Exception as e:
             raise MachineCreationError("Nephoscale, got exception %s" % e)
@@ -1148,7 +1145,7 @@ def _create_machine_gce(conn, key_name, private_key, public_key,
 
     metadata = {'startup-script': script,
                 'sshKeys': 'user:%s' % key}
-    #metadata for ssh user, ssh key and script to deploy 
+    #metadata for ssh user, ssh key and script to deploy
 
     with get_temp_file(private_key) as tmp_key_path:
         try:
@@ -1497,6 +1494,9 @@ def star_image(user, backend_id, image_id):
             if image_id in backend.unstarred:
                 backend.unstarred.remove(image_id)
         user.save()
+    task = tasks.ListImages()
+    task.clear_cache(user.email, backend_id)
+    task.delay(user.email, backend_id)
     return not star
 
 
@@ -1800,7 +1800,7 @@ def enable_monitoring(user, backend_id, machine_id,
         return ret_dict
     stdout = ''
     if not no_ssh:
-        async_ssh_command.delay(user.email, backend_id, machine_id, host, command)
+        tasks.ssh_command.delay(user.email, backend_id, machine_id, host, command)
 
     trigger_session_update(user.email, ['monitoring'])
 
@@ -1865,7 +1865,7 @@ def _undeploy_collectd(user, backend_id, machine_id, host):
         "sleep 2; $sudo kill -9 `cat /opt/mistio-collectd/collectd.pid`"
     )
 
-    async_ssh_command.delay(user.email, backend_id, machine_id, host, command)
+    tasks.ssh_command.delay(user.email, backend_id, machine_id, host, command)
 
 
 def probe(user, backend_id, machine_id, host, key_id='', ssh_user=''):
