@@ -62,11 +62,17 @@ define('app/controllers/backend_add', ['app/models/backend', 'ember'],
                 var that = this;
                 var projectName = this.newBackendOpenStackTenant || this.newBackendProjectName;
 
+                // Add tenant name to backend title for openstack and hpcloud
+                var provider = this.newBackendProvider.provider;
+                var title = this.newBackendProvider.title +
+                    (provider == 'openstack' || provider.indexOf('hpcloud') > -1 ?
+                        ' ' + this.newBackendOpenStackTenant : '');
+
                 Mist.backendsController.addBackend({
 
                     APIKey: this.newBackendFirstField,
                     APISecret: this.newBackendSecondField,
-                    title: this.newBackendProvider.title,
+                    title: title,
                     provider: this.newBackendProvider.provider,
                     APIURL: this.newBackendOpenStackURL,
                     region: this.newBackendOpenStackRegion,
@@ -122,6 +128,14 @@ define('app/controllers/backend_add', ['app/models/backend', 'ember'],
 
                 if (this.newBackendProvider.provider == 'docker') {
                     if (this.newBackendDockerURL && this.newBackendPort) {
+                        ready = true;
+                    }
+                } else if (this.newBackendProvider.provider == 'linode') {
+                    if (this.newBackendSecondField && this.newBackendSecondField) {
+                        ready = true;
+                    }
+                } else if (this.newBackendProvider.provider == 'digitalocean') {
+                    if (this.newBackendSecondField) {
                         ready = true;
                     }
                 } else if (this.newBackendFirstField && this.newBackendSecondField) {

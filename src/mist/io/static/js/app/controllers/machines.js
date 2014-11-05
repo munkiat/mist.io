@@ -52,7 +52,7 @@ define('app/controllers/machines', ['app/models/machine'],
              *
              */
 
-            newMachine: function(name, image, size, location, key, script) {
+            newMachine: function(name, image, size, location, key, script, monitoring) {
 
                 // Create a fake machine model for the user
                 // to see until we get the real machine from
@@ -71,6 +71,14 @@ define('app/controllers/machines', ['app/models/machine'],
                 // Don't send dummy key text
                 key = Mist.keysController.keyExists(key.id) ? key : null;
                 var that = this;
+
+                // Construct array of network ids for openstack
+                var networks = [];
+                this.backend.networks.content.forEach(function (network) {
+                    if (network.selected)
+                        networks.push(network.id);
+                });
+
                 this.set('addingMachine', true);
                 Mist.ajax.POST('backends/' + this.backend.id + '/machines', {
                         'name': name,
@@ -85,12 +93,21 @@ define('app/controllers/machines', ['app/models/machine'],
                         // Gce specific
                         'size_name': size.name,
                         'image_name': image.name,
-                        'location_name': location.name
+                        'location_name': location.name,
+                        'monitoring' : monitoring,
+                        // Openstack
+                        'networks': networks
                 }).success(function (machine) {
                     machine.backend = that.backend;
-                    that._createMachine(machine, key, dummyMachine);
+                    // Nephoscale returns machine id on request success,
+                    // but the machine is not listed on the next list_machines.
+                    // This makes the machine dissappear from the UI.
+                    if (that.backend.provider != 'nephoscale')
+                        that._createMachine(machine, key, dummyMachine);
+                    else
+                        dummyMachine.set('pendingCreation', false);
                 }).error(function (message) {
-                    that.removeObject(dummyMachine);
+                    that.content.removeObject(that.content.findBy('name', name));
                     Mist.notificationController.timeNotify('Failed to create machine: ' + message, 5000);
                 }).complete(function (success, machine) {
                     that.set('addingMachine', false);
@@ -133,7 +150,7 @@ define('app/controllers/machines', ['app/models/machine'],
                     //that._destroyMachine(machineId);
                 }).error(function() {
                     machine.restoreState();
-                    Mist.notificationController.notify('Failed to destory machine');
+                    Mist.notificationController.notify('Failed to destroy machine');
                 }).complete(function(success) {
                     that.set('destroyingMachine', false);
                     machine.set("beingDestroyed",false);

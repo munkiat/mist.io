@@ -78,7 +78,9 @@ define('app/controllers/rules', ['app/models/rule', 'ember'],
                     'operator': 'gt',
                     'value': 5,
                     'action': 'alert'
-                }).error(function(message) {
+                }).success(function (rule) {
+                    that._addRule(rule);
+                }).error(function (message) {
                     Mist.notificationController.notify(
                         'Error while creating rule: ' + message);
                 }).complete(function (success, data) {
@@ -182,8 +184,12 @@ define('app/controllers/rules', ['app/models/rule', 'ember'],
 
             _addRule: function (rule) {
                 Ember.run(this, function () {
-                    this.content.pushObject(Rule.create(rule));
-                    this.trigger('onRuleAdd');
+                    var newRule = Rule.create(rule);
+                    if (this.ruleExists(rule.id)) return;
+                    this.content.addObject(newRule);
+                    this.trigger('onRuleAdd', {
+                        rule: newRule
+                    });
                 });
             },
 
@@ -191,7 +197,9 @@ define('app/controllers/rules', ['app/models/rule', 'ember'],
             _updateRule: function (rule, data) {
                 Ember.run(this, function () {
                     rule.updateFromRawData(data);
-                    this.trigger('onRuleUpdate');
+                    this.trigger('onRuleUpdate', {
+                        rule: rule,
+                    });
                 });
             },
 
@@ -199,7 +207,9 @@ define('app/controllers/rules', ['app/models/rule', 'ember'],
             _deleteRule: function (rule) {
                 Ember.run(this, function () {
                     this.content.removeObject(rule);
-                    this.trigger('onRuleDelete');
+                    this.trigger('onRuleDelete', {
+                        rule: rule
+                    });
                 });
             },
 
