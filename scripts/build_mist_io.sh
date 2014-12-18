@@ -169,8 +169,8 @@ function commitChanges {
         then
 
             # Replace html references of mist.js and mist.css
-            sed s%\.\./build/mist.*%\.\./build/mist-${TIME_NOW}\"%g -i src/mist/io/templates/home.pt
-            sed s%resources/mist.*%resources/mist-${TIME_NOW}\.css\"%g -i src/mist/io/templates/home.pt
+            sed s%\.\./build/mist.*%\.\./build/mist-$TIME_NOW\"%g -i src/mist/io/templates/home.pt
+            sed s%resources/mist.*%resources/mist-$TIME_NOW\.css\"%g -i src/mist/io/templates/home.pt
 
             git commit -a -m "Automated build of mist.js & mist.css "
             BRANCH=`git branch | awk '/\*/ { print $2; }'`
