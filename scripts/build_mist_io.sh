@@ -168,9 +168,11 @@ function commitChanges {
         if [ x$ret = x'0' ]
         then
 
+            home_pt="src/mist/io/templates/home.pt"
+
             # Replace html references of mist.js and mist.css
-            sed s%\.\./build/mist.*%\.\./build/mist-$TIME_NOW\"%g -i src/mist/io/templates/home.pt
-            sed s%resources/mist.*%resources/mist-$TIME_NOW\.css\"%g -i src/mist/io/templates/home.pt
+            sed -i sed_backup s%\.\./build/mist.*%\.\./build/mist-$TIME_NOW\"%g $home_pt
+            sed -i sed_backup s%resources/mist.*%resources/mist-$TIME_NOW\.css\"%g $home_pt
 
             git commit -a -m "Automated build of mist.js & mist.css "
             BRANCH=`git branch | awk '/\*/ { print $2; }'`
