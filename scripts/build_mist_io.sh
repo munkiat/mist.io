@@ -10,7 +10,7 @@ STATIC_FILES_CHANGED="false"
 MIST_JS="src/mist/io/static/build/mist.js"
 MIST_CSS="src/mist/io/static/mist.css"
 
-css_build="src/mist/io/static/build/mist-$TIME_NOW.css"
+css_build="src/mist/io/static/mist-$TIME_NOW.css"
 js_build="src/mist/io/static/build/mist-$TIME_NOW.js"
 
 
@@ -162,11 +162,9 @@ function commitChanges {
         if [ x$ret = x'0' ]
         then
 
-            home_pt="src/mist/io/templates/home.pt"
-
             # Replace html references of mist.js and mist.css
-            sed s%\.\./build/mist.*%\.\./build/mist-$TIME_NOW\"%g -i $home_pt
-            sed s%resources/mist.*%resources/mist-$TIME_NOW\.css\"%g -i $home_pt
+            sed s%\.\./build/mist.*%\.\./build/mist-$TIME_NOW\"%g -i src/mist/io/templates/home.pt
+            sed s%resources/mist.*%resources/mist-$TIME_NOW\.css\"%g -i src/mist/io/templates/home.pt
 
             git commit -a -m "Automated build of mist.js & mist.css "
             BRANCH=`git branch | awk '/\*/ { print $2; }'`
