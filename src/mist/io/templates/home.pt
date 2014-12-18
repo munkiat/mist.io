@@ -32,7 +32,7 @@
                 baseUrl: 'resources/js/',
                 paths: {
                     //the optimized mist.js source file.
-                    "app": "../build/mist-1418sadasdasd"
+                    "app": "../build/mist-asdasd"
                 }
             });
             require(["app"]);
