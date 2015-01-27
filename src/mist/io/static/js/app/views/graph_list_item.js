@@ -1,10 +1,10 @@
-define('app/views/graph_list_item', ['app/views/templated', 'd3'],
+define('app/views/graph_list_item', ['app/views/templated', 'd3', 'c3'],
     //
     //  Graph View
     //
     //  @returns Class
     //
-    function (TemplatedView, d3) {
+    function (TemplatedView, d3, c3) {
 
         'use strict';
 

@@ -3,6 +3,7 @@
 -----------------------------------------------------------------------------------------------------------*/
 
 @import url('theme.css');
+@import url('c3.min.css');
 @import url('images/sprite-build/sprites.css');
 @import url('jquery.mobile.structure-1.4.0.min.css');
 
@@ -661,7 +662,3 @@ ul.checkbox-list li label {
     font-family: monospace;
     font-size: 11px;
 }
-
-
-
-

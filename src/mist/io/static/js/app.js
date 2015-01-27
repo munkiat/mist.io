@@ -12,6 +12,7 @@ require.config({
         handlebars: 'lib/handlebars-1.3.0.min',
         md5: 'lib/md5',
         d3: 'lib/d3.min',
+        c3: 'lib/c3.min',
         sha256: 'lib/sha256',
         socket: 'lib/socket.io',
         term: 'lib/term'
@@ -28,6 +29,9 @@ require.config({
         },
         'd3': {
             deps: ['jquery']
+        },
+        'c3': {
+            deps: ['d3']
         }
     }
 });
