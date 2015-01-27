@@ -1,4 +1,4 @@
-<div class="graph" {{bind-attr id="view.graph.id"}}>
+<div class="graph">
 
     <!--
         Graph Head
@@ -13,17 +13,7 @@
             {{/if}}
         </div>
 
-        {{#if view.graph.pendingCreation}}
 
-            <div class="ajax-loader"></div>
-
-        {{else}}
-
-            {{#if view.graph.pendingRemoval}}
-                <div class="ajax-loader"></div>
-            {{/if}}
-
-            <div class="ajax-loader fetching-stats-loader"></div>
 
             <!--
                 Remove button
@@ -47,46 +37,13 @@
                 </a>
             {{/if}}
 
-        {{/if}}
     </div>
 
     <!--
         Graph Body
     -->
 
-    <svg>
-        <g class="grid-x"></g>
-        <g class="grid-y"></g>
-        {{#each view.graph.datasources}}
-            <g {{bind-attr class="this.id"}}>
-                <path></path>
-            </g>
-        {{/each}}
+    <div {{bind-attr id="view.graph.id"}}>
+    </div>
 
-        <!--  Visible only when on single line graphs -->
-        <g class="valueArea">
-            <path></path>
-        </g>
-
-        <g class="x-axis"></g>
-        <rect class="hideAnimeLine"></rect>
-        <line class="axisLine x"></line>
-        <line class="axisLine y"></line>
-        <g class="y-axis"></g>
-    </svg>
-
-    <div class="valuePopUp"></div>
-
-    <!--
-        Graph Secondary Legend Header
-    -->
-
-    {{#if Mist.graphsController.config.showGraphLegend}}
-        <div class="legend">
-            {{#each view.graph.datasources}}
-                <div {{bind-attr class="this.id :lineLegend"}}></div>
-                {{this.machine.name}}
-            {{/each}}
-        </div>
-    {{/if}}
 </div>

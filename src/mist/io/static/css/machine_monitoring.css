@@ -20,18 +20,6 @@
     background: linear-gradient(to bottom,  rgba(242,242,242,1) 0%,rgba(229,229,229,1) 100%); /* W3C */
 }
 
-.graph .grid-x .tick {
-    stroke: #BABABA;
-}
-
-.graph .grid-y .tick {
-    stroke: #EDEDED;
-}
-
-.graph .grid-x path,.graph .grid-y path {
-    stroke-width: 1;
-}
-
 .graphControls {
     width: 100%;
     margin: 0 auto;
@@ -129,64 +117,8 @@
     background: linear-gradient(to bottom,  rgba(224,224,224,1) 0%,rgba(206,206,206,1) 100%); /* W3C */
 }
 
-.graph svg {
-    font: 10px Arial;
-    font-weight: bold;
-    color : #363636;
-    overflow: hidden;
-    margin-left: -15px;
-}
-
-.graph .hideAnimeLine,
-.graph svg {
-    background-color: #F9F9F9;
-    fill: #F9F9F9;
-}
-
-    /*, .x-axis line*/
-.graph .x-axis path, .graph .y-axis path {
-    fill: none;
-    stroke: none;
-    /*stroke: #333333;
-    stroke-width: 1;
-    /*shape-rendering: crispEdges;*/
-}
-
-.graph .x-axis text, .graph .y-axis text{
-    cursor: default;
-    stroke: none;
-    text-anchor: end;
-    fill: #333333;
-}
-
-.graph .axisLine,.graph .selectorLine{
-    fill:none;
-    stroke: #333333;
-    stroke-width: 1;
-}
-
-.area {
-    width: 500px;
-    height: 200px;
-    background-color: #eee;
-}
 
 
-/*
-path {
-    stroke: steelblue;
-    stroke-width: 2;
-    fill: lightsteelblue;
-}
-
-line {
-    stroke: black;
-}
-circle.mark{
-    stroke: steelblue;
-    fill: #fff;
-}
-*/
 
 #machine-monitoring #machine-monitoring-disabled {
     background: #e0e0e1;
