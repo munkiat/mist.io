@@ -18,7 +18,6 @@ define('app/controllers/rules', ['app/models/rule', 'ember'],
             //
 
 
-            content: [],
             creationPending: false,
 
             aggregateList: [{
@@ -137,7 +136,7 @@ define('app/controllers/rules', ['app/models/rule', 'ember'],
 
 
             getRuleById: function(ruleId) {
-                return this.content.findBy('id', ruleId);
+                return this.findBy('id', ruleId);
             },
 
 
@@ -162,7 +161,7 @@ define('app/controllers/rules', ['app/models/rule', 'ember'],
                 Ember.run(this, function() {
 
                     // Remove deleted rules
-                    this.content.forEach(function (rule) {
+                    this.forEach(function (rule) {
                         if (!rules[rule.id])
                             this._deleteRule(rule);
                     }, this);
@@ -189,7 +188,7 @@ define('app/controllers/rules', ['app/models/rule', 'ember'],
                 Ember.run(this, function () {
                     var newRule = Rule.create(rule);
                     if (this.ruleExists(rule.id)) return;
-                    this.content.addObject(newRule);
+                    this.addObject(newRule);
                     this.trigger('onRuleAdd', {
                         rule: newRule
                     });
@@ -209,7 +208,7 @@ define('app/controllers/rules', ['app/models/rule', 'ember'],
 
             _deleteRule: function (rule) {
                 Ember.run(this, function () {
-                    this.content.removeObject(rule);
+                    this.removeObject(rule);
                     this.trigger('onRuleDelete', {
                         rule: rule
                     });

@@ -18,7 +18,6 @@ define('app/controllers/logs', ['app/models/log', 'ember'],
             //
 
 
-            content: [],
             loading: null,
 
 
@@ -42,7 +41,8 @@ define('app/controllers/logs', ['app/models/log', 'ember'],
                     logs.forEach(function (log) {
                         newContent.push(Log.create(log));
                     });
-                    this.set('content', newContent);
+                    this.clear();
+                    this.pushObjects(newContent);
                     this.trigger('onLogListChange');
                 });
             },
@@ -54,7 +54,7 @@ define('app/controllers/logs', ['app/models/log', 'ember'],
                     logs.forEach(function (log) {
                         additionalContent.push(Log.create(log));
                     });
-                    this.get('content').unshiftObjects(additionalContent);
+                    this.unshiftObjects(additionalContent);
                     this.trigger('onLogListChange');
                 });
             },
@@ -66,7 +66,7 @@ define('app/controllers/logs', ['app/models/log', 'ember'],
                     logs.forEach(function (log) {
                         additionalContent.push(Log.create(log));
                     });
-                    this.get('content').pushObjects(additionalContent);
+                    this.pushObjects(additionalContent);
                     this.trigger('onLogListChange');
                 });
             }

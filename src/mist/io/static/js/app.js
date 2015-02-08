@@ -8,7 +8,7 @@ require.config({
     waitSeconds: 200,
     paths: {
         text: 'lib/require/text',
-        ember: 'lib/ember-1.6.0',
+        ember: 'lib/ember-1.7.0',
         jquery: 'lib/jquery-2.1.1.min',
         jqm: 'lib/jquery.mobile-1.4.5.min',
         handlebars: 'lib/handlebars-1.3.0.min',
@@ -554,7 +554,7 @@ var loadApp = function (
             });
         },
         exit: function () {
-            Mist.keysController.content.forEach(function (key) {
+            Mist.keysController.forEach(function (key) {
                  key.set('selected', false);
             });
         }
@@ -587,7 +587,7 @@ var loadApp = function (
             });
         },
         exit: function () {
-            Mist.logsController.content.forEach(function (log) {
+            Mist.logsController.forEach(function (log) {
                  log.set('selected', false);
             });
         }

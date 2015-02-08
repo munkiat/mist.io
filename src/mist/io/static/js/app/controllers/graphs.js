@@ -27,7 +27,6 @@ define('app/controllers/graphs', ['app/models/stats_request', 'ember'],
 
 
             isOpen: null,
-            content: [],
             resizeLock: null,
             pendingRequests: [],
             fetchingStats: null,
@@ -100,7 +99,7 @@ define('app/controllers/graphs', ['app/models/stats_request', 'ember'],
 
 
             getGraph: function(id) {
-                return this.content.findBy('id', id);
+                return this.findBy('id', id);
             },
 
 
@@ -172,7 +171,7 @@ define('app/controllers/graphs', ['app/models/stats_request', 'ember'],
 
                 var requests = [];
                 var offset = this.config.measurementOffset;
-                this.get('content').forEach(function (graph) {
+                this.forEach(function (graph) {
                     graph.datasources.forEach(function (datasource) {
                         var newRequest = StatsRequest.create({
                             from: args.from - offset,
@@ -295,7 +294,7 @@ define('app/controllers/graphs', ['app/models/stats_request', 'ember'],
 
             _fetchStatsEnded: function (response) {
                 Ember.run.next(this, function () {
-                    this.get('content').forEach(function (graph) {
+                    this.forEach(function (graph) {
                         graph.view.draw();
                     });
                     this.set('fetchingStats', false);
@@ -312,8 +311,8 @@ define('app/controllers/graphs', ['app/models/stats_request', 'ember'],
                 // displayed datapoints. Used after closing a streaming
                 // session.
 
-                if (!this.get('content').length) return;
-                var datasource = this.get('content')[0].datasources[0];
+                if (!this.length) return;
+                var datasource = this[0].datasources[0];
 
                 this.set('fetchStatsArgs', {
                     from: datasource.getFirstTimestamp() || (Date.now() - this.config.timeWindow),
@@ -328,7 +327,7 @@ define('app/controllers/graphs', ['app/models/stats_request', 'ember'],
                 clearTimeout(that.resizeLock);
                 that.set('resizeLock', setTimeout(resize, 500));
                 function resize () {
-                    that.content.forEach(function (graph) {
+                    that.forEach(function (graph) {
                         graph.view.autoResize();
                     });
                 }

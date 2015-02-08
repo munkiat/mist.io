@@ -12,7 +12,6 @@ define('app/controllers/machines', ['app/models/machine'],
              */
 
 
-            content: [],
             loading: null,
             backend: null,
             failCounter: null,
@@ -35,7 +34,6 @@ define('app/controllers/machines', ['app/models/machine'],
 
             init: function () {
                 this._super();
-                this.set('content', []);
                 this.set('loadint', true);
             },
 
@@ -75,7 +73,7 @@ define('app/controllers/machines', ['app/models/machine'],
 
                 // Construct array of network ids for openstack
                 var networks = [];
-                this.backend.networks.content.forEach(function (network) {
+                this.backend.networks.forEach(function (network) {
                     if (network.selected)
                         networks.push(network.id);
                 });
@@ -121,7 +119,7 @@ define('app/controllers/machines', ['app/models/machine'],
                     else
                         dummyMachine.set('pendingCreation', false);
                 }).error(function (message) {
-                    that.content.removeObject(that.content.findBy('name', name));
+                    that.removeObject(that.findBy('name', name));
                     Mist.notificationController.timeNotify('Failed to create machine: ' + message, 5000);
                 }).complete(function (success, machine) {
                     that.set('addingMachine', false);
@@ -217,7 +215,7 @@ define('app/controllers/machines', ['app/models/machine'],
 
 
             getMachine: function(machineId) {
-                return this.content.findBy('id', machineId);
+                return this.findBy('id', machineId);
             },
 
 
@@ -239,7 +237,7 @@ define('app/controllers/machines', ['app/models/machine'],
 
                     // Replace dummy machines (newly created)
 
-                    var dummyMachines = that.content.filterBy('id', -1);
+                    var dummyMachines = that.filterBy('id', -1);
 
                     dummyMachines.forEach(function(machine) {
                         var realMachine = machines.findBy('name', machine.name);
@@ -250,10 +248,10 @@ define('app/controllers/machines', ['app/models/machine'],
 
                     // Remove deleted machines
 
-                    that.content.forEach(function(machine) {
+                    that.forEach(function(machine) {
                         if (!machines.findBy('id', machine.id))
                             if (machine.id != -1)
-                                that.content.removeObject(machine);
+                                that.removeObject(machine);
                     });
 
                     // Update content
@@ -279,7 +277,7 @@ define('app/controllers/machines', ['app/models/machine'],
 
                             // Add new machine
                             machine.backend = that.backend;
-                            that.content.pushObject(Machine.create(machine));
+                            that.pushObject(Machine.create(machine));
                         }
                     });
 
@@ -295,8 +293,8 @@ define('app/controllers/machines', ['app/models/machine'],
                     machine = Machine.create(machine);
                     if (machine.state == 'stopped')
                         machine.set('state', 'pending');
-                    this.content.addObject(machine);
-                    this.content.removeObject(dummyMachine);
+                    this.addObject(machine);
+                    this.removeObject(dummyMachine);
                     Mist.keysController._associateKey(key.id, machine);
                     this.trigger('onMachineListChange');
                 });
@@ -306,7 +304,7 @@ define('app/controllers/machines', ['app/models/machine'],
             _updateSelectedMachines: function() {
                 Ember.run(this, function() {
                     var newSelectedMachines = [];
-                    this.content.forEach(function(machine) {
+                    this.forEach(function(machine) {
                         if (machine.selected) newSelectedMachines.push(machine);
                     });
                     this.set('selectedMachines', newSelectedMachines);
@@ -330,7 +328,7 @@ define('app/controllers/machines', ['app/models/machine'],
                     });
 
                     // Pass machine reference to rules
-                    Mist.rulesController.content.forEach(function (rule) {
+                    Mist.rulesController.forEach(function (rule) {
                         if (rule.machine.id) return;
                         if (machine.equals([rule.backend, rule.machine]))
                             rule.set('machine', machine);

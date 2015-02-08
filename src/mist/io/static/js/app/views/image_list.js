@@ -54,7 +54,7 @@ define('app/views/image_list', ['app/views/mistscreen'],
 
                 // Remove event listeners
                 var that = this;
-                Mist.backendsController.content.forEach(function(backend) {
+                Mist.backendsController.forEach(function(backend) {
                     backend.off('onImageListChange', that, 'updateBaseImages');
                 });
                 Mist.imageSearchController.off('onSearchEnd', this, 'updateBaseImages');
@@ -88,8 +88,8 @@ define('app/views/image_list', ['app/views/mistscreen'],
 
             updateDefaultImages: function () {
                 var newImages = [];
-                Mist.backendsController.content.forEach(function (backend) {
-                    backend.images.content.forEach(function (image) {
+                Mist.backendsController.forEach(function (backend) {
+                    backend.images.forEach(function (image) {
                         if (image.star)
                             newImages.unshift(image);
                         else

@@ -358,7 +358,7 @@ define('app/views/graph_list_item', ['app/views/templated', 'd3'],
                        clearSelectorLine();
                     }
 
-                    Mist.graphsController.content.forEach(function (graph) {
+                    Mist.graphsController.forEach(function (graph) {
                         updateGraphValue(graph);
                     });
                 };

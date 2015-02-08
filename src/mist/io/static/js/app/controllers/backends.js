@@ -18,7 +18,6 @@ define('app/controllers/backends', ['app/models/backend', 'ember'],
             //
 
 
-            content: [],
             imageCount: 0,
             machineCount: 0,
             networkCount: 0,
@@ -39,12 +38,12 @@ define('app/controllers/backends', ['app/models/backend', 'ember'],
 
 
             hasOpenStack: function () {
-                return !!this.content.filterBy('enabled', true).findBy('isOpenStack', true);
-            }.property('content.@each.isOpenStack', 'content.@each.enabled'),
+                return !!this.filterBy('enabled', true).findBy('isOpenStack', true);
+            }.property('this.@each.isOpenStack', 'content.@each.enabled'),
 
             hasNetworks: function () {
-                return !!this.content.findBy('hasNetworks', true);
-            }.property('content.@each.hasNetworks'),
+                return !!this.findBy('hasNetworks', true);
+            }.property('this.@each.hasNetworks'),
 
             //
             //
@@ -174,10 +173,10 @@ define('app/controllers/backends', ['app/models/backend', 'ember'],
 
             updateMachineCount: function() {
                 var count = 0;
-                var content = this.content;
-                var contentLength = this.content.length;
+                var content = this;
+                var contentLength = this.length;
                 for (var b = 0; b < contentLength; ++b) {
-                    count += content[b].machines.content.length;
+                    count += content[b].machines.length;
                 }
                 this.set('machineCount', count);
                 this.trigger('updateMachines');
@@ -186,8 +185,8 @@ define('app/controllers/backends', ['app/models/backend', 'ember'],
 
             updateImageCount: function() {
                 var count = 0;
-                this.content.forEach(function(backend) {
-                    count += backend.images.content.length;
+                this.forEach(function(backend) {
+                    count += backend.images.length;
                 });
                 this.set('imageCount', count);
             }.observes('content.length'),
@@ -232,7 +231,7 @@ define('app/controllers/backends', ['app/models/backend', 'ember'],
 
 
             getBackend: function(backendId) {
-                return this.content.findBy('id', backendId);
+                return this.findBy('id', backendId);
             },
 
 
@@ -246,7 +245,7 @@ define('app/controllers/backends', ['app/models/backend', 'ember'],
                 }
 
                 var machine = null;
-                this.content.some(function(backend) {
+                this.some(function(backend) {
                     return machine = backend.getMachine(machineId);
                 });
                 return machine;
@@ -262,7 +261,7 @@ define('app/controllers/backends', ['app/models/backend', 'ember'],
                 }
 
                 var network = null;
-                this.content.some(function(backend) {
+                this.some(function(backend) {
                     return network = backend.getNetwork(networkId);
                 });
                 return network;
@@ -295,9 +294,9 @@ define('app/controllers/backends', ['app/models/backend', 'ember'],
                 Ember.run(this, function() {
 
                     // Remove deleted backends
-                    this.content.forEach(function (backend) {
+                    this.forEach(function (backend) {
                         if (!backends.findBy('id', backend.id))
-                            this.content.removeObject(backend);
+                            this.removeObject(backend);
                     }, this);
 
                     backends.forEach(function (backend) {
@@ -323,14 +322,14 @@ define('app/controllers/backends', ['app/models/backend', 'ember'],
                 Ember.run(this, function() {
                     if (this.backendExists(backend.id)) return;
                     var backendModel = Backend.create(backend);
-                    this.content.addObject(backendModel);
+                    this.addObject(backendModel);
                     // <TODO (gtsop): move this code into backend model
                     if (keyId)
                         backendModel.one('onMachineListChange', function() {
                             if (backendModel.provider == 'bare_metal') {
                                 backendModel.set('isBareMetal', true);
                                 Mist.keysController._associateKey(keyId,
-                                    backendModel.machines.content[0]);
+                                    backendModel.machines[0]);
                             }
                         });
                     // />
@@ -341,7 +340,7 @@ define('app/controllers/backends', ['app/models/backend', 'ember'],
 
             _deleteBackend: function(backend) {
                 Ember.run(this, function() {
-                    this.content.removeObject(backend);
+                    this.removeObject(backend);
                     this.trigger('onBackendDelete');
                 });
             },
@@ -366,7 +365,7 @@ define('app/controllers/backends', ['app/models/backend', 'ember'],
             _updateImageCount: function() {
                 Ember.run(this, function() {
                     var counter = 0;
-                    this.content.forEach(function(backend) {
+                    this.forEach(function(backend) {
                         if (backend.enabled) counter += backend.imageCount;
                     });
                     this.set('imageCount', counter);
@@ -378,7 +377,7 @@ define('app/controllers/backends', ['app/models/backend', 'ember'],
             _updateMachineCount: function() {
                 Ember.run(this, function() {
                     var counter = 0;
-                    this.content.forEach(function(backend) {
+                    this.forEach(function(backend) {
                         if (backend.enabled) counter += backend.machineCount;
                     });
                     this.set('machineCount', counter);
@@ -390,7 +389,7 @@ define('app/controllers/backends', ['app/models/backend', 'ember'],
             _updateNetworkCount: function() {
                 Ember.run(this, function() {
                     var counter = 0;
-                    this.content.forEach(function (backend) {
+                    this.forEach(function (backend) {
                         if (backend.enabled)
                             counter += backend.networkCount;
                     });
@@ -402,26 +401,26 @@ define('app/controllers/backends', ['app/models/backend', 'ember'],
 
             _updateLoadingImages: function() {
                 this.set('loadingImages',
-                    !!this.content.findBy('loadingImages', true));
+                    !!this.findBy('loadingImages', true));
             },
 
 
             _updateLoadingMachines: function() {
                 this.set('loadingMachines',
-                    !!this.content.findBy('loadingMachines', true));
+                    !!this.findBy('loadingMachines', true));
             },
 
 
             _updateLoadingNetworks: function () {
                 this.set('loadingNetworks',
-                    !!this.content.findBy('loadingNetworks', true));
+                    !!this.findBy('loadingNetworks', true));
             },
 
 
             _updateSelectedMachines: function() {
                 Ember.run(this, function() {
                     var newSelectedMachines = [];
-                    this.content.forEach(function(backend) {
+                    this.forEach(function(backend) {
                         newSelectedMachines = newSelectedMachines.concat(backend.selectedMachines);
                     });
                     this.set('selectedMachines', newSelectedMachines);
@@ -433,7 +432,7 @@ define('app/controllers/backends', ['app/models/backend', 'ember'],
             _updateSelectedNetworks: function () {
                 Ember.run(this, function () {
                     var newSelectedNetworks = [];
-                    this.content.forEach(function (backend) {
+                    this.forEach(function (backend) {
                         newSelectedNetworks = newSelectedNetworks.concat(backend.selectedNetworks);
                     });
                     this.set('selectedNetworks', newSelectedNetworks);

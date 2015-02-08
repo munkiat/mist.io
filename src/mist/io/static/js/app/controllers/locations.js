@@ -18,7 +18,6 @@ define('app/controllers/locations', ['app/models/location'],
             //
 
 
-            content: null,
             loading: null,
             backend: null,
 
@@ -32,7 +31,6 @@ define('app/controllers/locations', ['app/models/location'],
 
             init: function () {
                 this._super();
-                this.set('content', []);
                 this.set('loading', true);
             },
 
@@ -51,7 +49,7 @@ define('app/controllers/locations', ['app/models/location'],
 
 
             getLocation: function (locationId) {
-                return this.content.findBy('id', locationId);
+                return this.findBy('id', locationId);
             },
 
 
@@ -66,9 +64,9 @@ define('app/controllers/locations', ['app/models/location'],
                 Ember.run(this, function () {
 
                     // Remove deleted locations
-                    this.content.forEach(function (location) {
+                    this.forEach(function (location) {
                         if (!locations.findBy('id', location.id))
-                            this.content.removeObject(location);
+                            this.removeObject(location);
                     }, this);
 
                     locations.forEach(function (location) {
@@ -92,7 +90,7 @@ define('app/controllers/locations', ['app/models/location'],
 
             _addLocation: function (location) {
                 Ember.run(this, function () {
-                    this.content.addObject(Location.create(location));
+                    this.addObject(Location.create(location));
                     this.trigger('onLocationAdd');
                 });
             },
@@ -100,7 +98,7 @@ define('app/controllers/locations', ['app/models/location'],
 
             _deleteLocation: function (locationId) {
                 Ember.run(this, function () {
-                    this.content.removeObject(this.getLocation(locationId));
+                    this.removeObject(this.getLocation(locationId));
                     this.trigger('onLocationDelete');
                 });
             }

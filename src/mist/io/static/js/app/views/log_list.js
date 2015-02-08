@@ -96,7 +96,7 @@ define('app/views/log_list', ['app/views/mistscreen'],
                         this.filter(logs)
                     );
                 });
-                if (logs.length && Mist.logsController.content.length < MIN_LOGS_DISPLAYED) {
+                if (logs.length && Mist.logsController.length < MIN_LOGS_DISPLAYED) {
                     this.set('disableScrollFetch', true);
                     Ember.run.later(this, function () {
                         this.search();
@@ -257,7 +257,7 @@ define('app/views/log_list', ['app/views/mistscreen'],
             _updateLogTime: function () {
                 if (this.$()) {
                     Ember.run(this, function () {
-                        Mist.logsController.content.forEach(function (log) {
+                        Mist.logsController.forEach(function (log) {
                             log.propertyWillChange('time');
                             log.propertyDidChange('time');
                         });

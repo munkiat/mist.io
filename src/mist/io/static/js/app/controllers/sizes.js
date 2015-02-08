@@ -18,7 +18,6 @@ define('app/controllers/sizes', ['app/models/size'],
             //
 
 
-            content: null,
             loading: null,
             backend: null,
 
@@ -32,7 +31,6 @@ define('app/controllers/sizes', ['app/models/size'],
 
             init: function () {
                 this._super();
-                this.set('content', []);
                 this.set('loading', true);
             },
 
@@ -51,7 +49,7 @@ define('app/controllers/sizes', ['app/models/size'],
 
 
             getSize: function (sizeId) {
-                return this.content.findBy('id', sizeId);
+                return this.findBy('id', sizeId);
             },
 
 
@@ -66,9 +64,9 @@ define('app/controllers/sizes', ['app/models/size'],
                 Ember.run(this, function () {
 
                     // Remove deleted sizes
-                    this.content.forEach(function (size) {
+                    this.forEach(function (size) {
                         if (!sizes.findBy('id', size.id))
-                            this.content.removeObject(size);
+                            this.removeObject(size);
                     }, this);
 
                     sizes.forEach(function (size) {
@@ -92,7 +90,7 @@ define('app/controllers/sizes', ['app/models/size'],
 
             _addSize: function (size) {
                 Ember.run(this, function () {
-                    this.content.addObject(Size.create(size));
+                    this.addObject(Size.create(size));
                     this.trigger('onSizeAdd');
                 });
             },
@@ -100,7 +98,7 @@ define('app/controllers/sizes', ['app/models/size'],
 
             _deleteSize: function (sizeId) {
                 Ember.run(this, function () {
-                    this.content.removeObject(this.getSize(sizeId));
+                    this.removeObject(this.getSize(sizeId));
                     this.trigger('onSizeDelete');
                 });
             }

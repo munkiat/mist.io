@@ -66,7 +66,6 @@ define('app/controllers/images', ['app/models/image'],
             //
 
 
-            content: null,
             loading: null,
             backend: null,
 
@@ -79,7 +78,7 @@ define('app/controllers/images', ['app/models/image'],
 
 
             hasStarred: function () {
-                return !!this.content.findBy('star', true);
+                return !!this.findBy('star', true);
             }.property('content.@each.star'),
 
 
@@ -92,7 +91,6 @@ define('app/controllers/images', ['app/models/image'],
 
             init: function () {
                 this._super();
-                this.set('content', []);
                 this.set('loading', true);
             },
 
@@ -148,7 +146,7 @@ define('app/controllers/images', ['app/models/image'],
 
 
             getImage: function (imageId) {
-                return this.content.findBy('id', imageId);
+                return this.findBy('id', imageId);
             },
 
 
@@ -184,9 +182,9 @@ define('app/controllers/images', ['app/models/image'],
                 Ember.run(this, function () {
 
                     // Remove deleted images
-                    this.content.forEach(function (image) {
+                    this.forEach(function (image) {
                         if (!images.findBy('id', image.id))
-                            this.content.removeObject(image);
+                            this.removeObject(image);
                     }, this);
 
                     images.forEach(function (image) {
@@ -211,7 +209,7 @@ define('app/controllers/images', ['app/models/image'],
             _addImage: function (image) {
                 Ember.run(this, function () {
                     image.backend = this.backend;
-                    this.content.addObject(Image.create(image));
+                    this.addObject(Image.create(image));
                     this.trigger('onImageAdd');
                 });
             },

@@ -31,8 +31,8 @@ define('app/controllers/base_array', ['ember'],
 
 
             selectedObjects: function () {
-                return this.get('content').filterBy('selected', true);
-            }.property('content.@each.selected'),
+                return this.filterBy('selected', true);
+            }.property('this.@each.selected'),
 
 
             //
@@ -67,7 +67,7 @@ define('app/controllers/base_array', ['ember'],
 
 
             getObject: function (id) {
-                return this.get('content').findBy('id', id);
+                return this.findBy('id', id);
             },
 
 
@@ -87,7 +87,7 @@ define('app/controllers/base_array', ['ember'],
 
                 Ember.run(this, function () {
                     // Remove deleted objects
-                    this.get('content').forEach(function (object) {
+                    this.forEach(function (object) {
                         if (!content.findBy('id', object.id))
                             this._deleteObject(object);
                     }, this);
@@ -147,7 +147,7 @@ define('app/controllers/base_array', ['ember'],
                 Ember.run.once(this, function () {
                     this.trigger('onSelectedChange');
                 });
-            }.observes('content.@each.selected')
+            }.observes('this.@each.selected')
         })
     }
 );

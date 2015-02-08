@@ -86,7 +86,7 @@ define('app/views/key_list', ['app/views/mistscreen'],
                     $('#select-keys-popup').popup('close');
 
                     Ember.run(function () {
-                        Mist.keysController.content.forEach(function (key) {
+                        Mist.keysController.forEach(function (key) {
                             key.set('selected', mode);
                         });
                     });

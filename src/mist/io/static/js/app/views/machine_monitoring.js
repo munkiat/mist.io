@@ -317,7 +317,7 @@ define('app/views/machine_monitoring',
                                 machine,
                                 function (success) {
                                     if (success)
-                                        Mist.graphsController.content.removeObject(graph);
+                                        Mist.graphsController.removeObject(graph);
                                 }
                             );
                         else
@@ -479,7 +479,7 @@ define('app/views/machine_monitoring',
 
 
             _updateRules: function () {
-                Mist.rulesController.content.forEach(function (rule) {
+                Mist.rulesController.forEach(function (rule) {
                     if (this.machine.equals(rule.machine))
                         if (!this.rules.findBy('id', rule.id))
                             this.rules.pushObject(rule);
