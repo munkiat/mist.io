@@ -4070,7 +4070,7 @@ def  list_zones(user, backend_id):
         #    pass
     else:
         #no DNS support for this provider, skip
-        raise MistError ("No DNS support for this provider %s." % backend.provider)
+        raise MistError ("No DNS support for this provider %s." , backend.provider)
         
     
     msg = ("Listing zones for user %s in provider %s" %(user,  backend.provider))
@@ -4098,7 +4098,7 @@ def list_records(user, backend_id, zone_name):
     try:
         zones = list_zones(user, backend_id)
     except Exception as exc:
-        raise MistError ("Error listing zones for DNS provider %s" % backend.provider)
+        raise MistError ("Error listing zones for DNS provider %s" , backend.provider)
     
     
     z = None
@@ -4121,6 +4121,9 @@ def list_records(user, backend_id, zone_name):
     
     return records    
 
+def delete_record(user, backend_id, zone_name, record_type, record_name):
+
+
     """deletes the given record for given zone managed by given backend/cloud"""    
 
     if backend_id not in user.backends:
@@ -4140,14 +4143,14 @@ def list_records(user, backend_id, zone_name):
         #    pass
     else:
         #no DNS support for this provider, skip
-        raise MistError ("No DNS support for this provider %s." % backend.provider)
+        raise MistError ("No DNS support for this provider %s." , backend.provider)
 
   
     #check if given zone_name is managed by given backend/cloud
     try:
         zones = list_zones(user, backend_id)
     except Exception as exc:
-        raise MistError ("Error listing zones for DNS provider %s" % backend.provider)
+        raise MistError ("Error listing zones for DNS provider %s" , backend.provider)
     
     
     z = None
@@ -4157,11 +4160,12 @@ def list_records(user, backend_id, zone_name):
             break
             
     if z is None:
-        raise MistError("Zone is not managed by given backend/cloud or does not exist")    
+        raise MistError("Zone in which the given record belongs is not managed by given backend/cloud or does not exist")    
+    
     try:
-        records = list_records(user, backend_id, zone_name)
+        records = list_records(user, backend_id, z)
     except Exception as exc:
-        raise MistError("Error listing records for zone %s in DNS provider %s."% (zone_name, backend.provider))   
+        raise MistError("Error listing records for zone %s in DNS provider %s." % (zone_name, backend.provider))   
     
     best_record = None
     for record in records:
@@ -4184,7 +4188,7 @@ def list_records(user, backend_id, zone_name):
 
 def add_record(user, backend_id, zone_name, record_type, record_name, data):
 
-    """creates a dns record and adds it on the record list of the given zone"""    
+    """creates a dns record and adds it on the record list of the given zone managed by given backend/cloud"""    
 
     if backend_id not in user.backends:
         raise BackendNotFoundError(backend_id)
@@ -4203,14 +4207,73 @@ def add_record(user, backend_id, zone_name, record_type, record_name, data):
         #    pass
     else:
         #no DNS support for this provider, skip
-        raise MistError ("No DNS support for this provider %s." % backend.provider)
+        raise MistError ("No DNS support for this provider %s." , backend.provider)
 
   
     #check if given zone_name is managed by given backend/cloud
     try:
         zones = list_zones(user, backend_id)
     except Exception as exc:
-        raise MistError ("Error listing zones for DNS provider %s" % backend.provider)
+        raise MistError ("Error listing zones for DNS provider %s" , backend.provider)
+    
+    
+    z = None
+    for zone in zones:
+        if zone.domain == zone_name:
+            z = zone
+            break
+            
+    if z is None:
+        raise MistError("Zone to add record is not managed by given backend/cloud or does not exist")
+    
+    records = []
+    
+    try:
+        records = list_records(user, backend_id, z)
+    except Exception as exc:
+        raise MistError("Error listing records in zone %s", zone_name)
+    
+    msg = ("Creating record % for ip_address %s and adding it to the records of zone %" % (record_name, data, z))
+
+    try:
+        new_record = z.create_record(record_name,  record_type, data)
+    except Exception as exc:
+        raise MistError(msg + " failed: %r" % repr(exc))
+   
+    records.append(new_record)
+    log.info(msg + " succeeded.")
+    
+    return None
+
+def edit_record(user, backend_id, zone_name, record_type, record_name, data):
+
+    """edits a dns record existing on the record list of the given zone managed by given backend/cloud"""    
+
+    if backend_id not in user.backends:
+        raise BackendNotFoundError(backend_id)
+    
+    backend = user.backends[backend_id]
+
+    #check if provider for this backend_id has DNS support
+    if backend.provider.startswith('ec2_'):
+        provider = DnsProvider.ROUTE53
+        creds = backend.apikey, backend.apisecret
+        #TODO: add support for more providers
+        #elif backend.provider == Provider.LINODE:
+        #    pass
+        #elif backend.provider == Provider.RACKSPACE:
+        #    pass
+        #    pass
+    else:
+        #no DNS support for this provider, skip
+        raise MistError ("No DNS support for this provider %s." , backend.provider)
+
+  
+    #check if given zone_name is managed by given backend/cloud
+    try:
+        zones = list_zones(user, backend_id)
+    except Exception as exc:
+        raise MistError ("Error listing zones for DNS provider %s" , backend.provider)
     
     
     z = None
@@ -4223,62 +4286,6 @@ def add_record(user, backend_id, zone_name, record_type, record_name, data):
         raise MistError("Zone is not managed by given backend/cloud or does not exist")
     
     records = []
-    
-    try:
-        records = list_recors(user, backend_id, z)
-    except Exception as exc:
-        raise MistError("Error listing records in zone %s", zone_name)
-    
-    msg = ("Creating record % for ip_address %s and adding it to the records of zone %" % (record_name, data, z))
-
-    try:
-        record = zone_name.create_record(record_name,  record_type, data)
-    except Exception as exc:
-        raise MistError(msg + " failed: %r" % repr(exc))
-   
-    log.info(msg + " succeeded.")
-    
-    return None
-
-def edit_record(user, backend_id, zone_name, record_type, record_name, data):
-
-    """creates a dns record and adds it on the record list of the given zone"""    
-
-    if backend_id not in user.backends:
-        raise BackendNotFoundError(backend_id)
-    
-    backend = user.backends[backend_id]
-
-    #check if provider for this backend_id has DNS support
-    if backend.provider.startswith('ec2_'):
-        provider = DnsProvider.ROUTE53
-        creds = backend.apikey, backend.apisecret
-        #TODO: add support for more providers
-        #elif backend.provider == Provider.LINODE:
-        #    pass
-        #elif backend.provider == Provider.RACKSPACE:
-        #    pass
-        #    pass
-    else:
-        #no DNS support for this provider, skip
-        raise MistError ("No DNS support for this provider %s." % backend.provider)
-
-  
-    #check if given zone_name is managed by given backend/cloud
-    try:
-        zones = list_zones(user, backend_id)
-    except Exception as exc:
-        raise MistError ("Error listing zones for DNS provider %s" % backend.provider)
-    
-    
-    z = None
-    for zone in zones:
-        if zone.domain == zone_name:
-            z = zone
-            break
-            
-    if z is None:
-        raise MistError("Zone is not managed by given backend/cloud or does not exist")
     
     try:
         records = list_recors(user, backend_id, z)
