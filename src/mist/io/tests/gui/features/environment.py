@@ -3,8 +3,7 @@ import random
 from behaving import environment as benv
 
 try:
-    from mist.io.tests.settings import CREDENTIALS, LOCAL, DEBUG, BASE_DIR, \
-                                       MIST_URL, MAIL_PATH
+    from mist.io.tests.settings import CREDENTIALS, LOCAL, DEBUG, BASE_DIR
 except ImportError:
     pass
 
@@ -15,17 +14,16 @@ from mist.io.tests.helpers.selenium_utils import choose_driver
 def before_all(context):
     benv.before_all(context)
     context.browser = choose_driver()
-
-    context.mist_config = dict()
-    context.mist_config['MACHINE_NAME'] = "TESTMACHINE" + str(random.randint(1, 10000))
-    context.mist_config['KEY_NAME'] = "TESTKEY" + str(random.randint(1, 10000))
-    context.mist_config['CREDENTIALS'] = CREDENTIALS
-
-    if not LOCAL:
+    if LOCAL:
+        context.mist_url = "http://localhost:8000"
+    else:
         docker_info = docker_all_in_one(flavor="io")
         context.remote_info = docker_info
+        context.mist_url = docker_info['URL']
 
-    context.mist_config['MIST_URL'] = MIST_URL if LOCAL else docker_info['URL']
+    context.credentials = CREDENTIALS
+    context.machine_name = "TESTMACHINE" + str(random.randint(1, 10000))
+    context.key_name = "TESTKEY" + str(random.randint(1, 10000))
 
 
 def after_step(context, step):

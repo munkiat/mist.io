@@ -577,6 +577,25 @@ var DIALOG_TYPES = {
 var EMAIL_REGEX = /(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))/;
 
 var PROVIDER_MAP = {
+    dimensiondata: [
+        {
+            name: 'title',
+            type: 'text',
+            defaultValue: 'Dimension Data', 
+        },
+        {
+            name: 'username',
+            type: 'text',
+        },
+        {
+            name: 'password',
+            type: 'password',
+        }, 
+        {
+            name: 'region',
+            type: 'text',
+        }
+    ],
 
     azure: [
         {

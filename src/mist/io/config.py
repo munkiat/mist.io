@@ -93,6 +93,12 @@ LINODE_DATACENTERS = {
 }
 
 SUPPORTED_PROVIDERS_V_2 = [
+    #dimensiondata
+    {
+        'title': 'Dimension Data',
+        'provider': Provider.DIMENSIONDATA,
+        'regions': []
+    },
     # BareMetal
     {
         'title': 'Other Server',

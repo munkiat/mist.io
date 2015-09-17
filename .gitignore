@@ -13,7 +13,6 @@ var
 *.pyc
 *.pyo
 *.egg-info
-src/libcloud
 src/fabric
 src/paramiko
 src/deploy_collectd
