@@ -283,6 +283,9 @@ def add_backend_v_2(user, title, provider, params):
         backend_id, backend = _add_backend_vultr(title, provider, params)
     elif provider == 'vsphere':
         backend_id, backend = _add_backend_vsphere(title, provider, params)
+    #dimensiondata
+    elif provider == 'dimensiondata':
+        backend_id, backend = _add_backend_dimensiondata(title, provider, params)
     else:
         raise BadRequestError("Provider unknown.")
 
@@ -299,7 +302,7 @@ def add_backend_v_2(user, title, provider, params):
         except Exception as exc:
             log.error("Error while adding backend%r" % exc)
             raise BackendUnavailableError(exc)
-        if provider not in ['vshere']:
+        if provider not in ['vsphere']:
             # in some providers -eg vSphere- this is not needed
             # as we are sure we got a succesfull connection with
             # the provider if connect_provider doesn't fail
@@ -325,7 +328,6 @@ def add_backend_v_2(user, title, provider, params):
         associate_key(user, key_id, backend_id, node_id, username=username)
 
     return {'backend_id': backend_id}
-
 
 def _add_backend_bare_metal(user, title, provider, params):
     """
@@ -478,6 +480,25 @@ def _add_backend_coreos(user, title, provider, params):
 
     return backend_id, mon_dict
 
+def _add_backend_dimensiondata(title, provider, params):
+    username = params.get('username', '')
+    # if not api_key:
+    #    raise RequiredParameterMissingError('username')
+    password = params.get('password', '')
+    # if not api_key:
+    #    raise RequiredParameterMissingError('password')
+    region = params.get('region', '')
+
+    backend = model.Backend()
+    backend.title = title
+    backend.provider = provider
+    backend.apikey = username
+    backend.apisecret = password
+    backend.region = region
+    backend.enabled = True
+    backend_id = backend.get_id()
+
+    return backend_id, backend
 
 def _add_backend_vcloud(title, provider, params):
     username = params.get('username', '')
@@ -1308,6 +1329,9 @@ def connect_provider(backend):
         conn = BareMetalDriver(backend.machines)
     elif backend.provider == 'coreos':
         conn = CoreOSDriver(backend.machines)
+    #dimensiondata
+    elif backend.provider == Provider.DIMENSIONDATA:
+        conn = driver(backend.apikey, backend.apisecret, region=backend.region)
     elif backend.provider == Provider.LIBVIRT:
         # support the three ways to connect: local system, qemu+tcp, qemu+ssh
         if backend.apisecret:
@@ -2662,6 +2686,7 @@ def list_images(user, backend_id, term=None):
                               for image, name in config.DOCKER_IMAGES.items()]
             rest_images += conn.list_images()
         else:
+            log.error("testing  MING SHENGG")
             rest_images = conn.list_images()
             starred_images = [image for image in rest_images
                               if image.id in starred]
