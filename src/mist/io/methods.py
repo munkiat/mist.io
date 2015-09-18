@@ -497,6 +497,7 @@ def _add_backend_dimensiondata(title, provider, params):
     backend.apikey = username
     backend.apisecret = password
     backend.region = region
+    backend.enabled = True
     backend_id = backend.get_id()
 
     return backend_id, backend
