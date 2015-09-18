@@ -62,8 +62,7 @@ libcloud.security.CA_CERTS_PATH.append('./src/mist.io/cacert.pem')
 import logging
 logging.basicConfig(level=config.PY_LOG_LEVEL,
                     format=config.PY_LOG_FORMAT,
-                    datefmt=config.PY_LOG_FORMAT_DATE,
-                    filename='example.log')
+                    datefmt=config.PY_LOG_FORMAT_DATE)
 log = logging.getLogger(__name__)
 
 HPCLOUD_AUTH_URL = 'https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/tokens'
@@ -2689,7 +2688,7 @@ def list_images(user, backend_id, term=None):
                               for image, name in config.DOCKER_IMAGES.items()]
             rest_images += conn.list_images()
         else:
-            log.info("testing  MING SHENGG")
+            log.error("testing  MING SHENGG")
             rest_images = conn.list_images()
             starred_images = [image for image in rest_images
                               if image.id in starred]
