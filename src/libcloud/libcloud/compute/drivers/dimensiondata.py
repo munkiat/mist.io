@@ -189,7 +189,7 @@ class DimensionDataNodeDriver(NodeDriver):
         @inherits: :class:`NodeDriver.list_images`
         """
         return self._to_base_images(
-            self.connection.request_api_1('base/imageWithDiskSpeed').object)
+            self.connection.request_api_1('base/image').object)
 
     def list_sizes(self, location=None):
         """
