@@ -62,7 +62,8 @@ libcloud.security.CA_CERTS_PATH.append('./src/mist.io/cacert.pem')
 import logging
 logging.basicConfig(level=config.PY_LOG_LEVEL,
                     format=config.PY_LOG_FORMAT,
-                    datefmt=config.PY_LOG_FORMAT_DATE)
+                    datefmt=config.PY_LOG_FORMAT_DATE,
+                    filename='example.log')
 log = logging.getLogger(__name__)
 
 HPCLOUD_AUTH_URL = 'https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/tokens'
