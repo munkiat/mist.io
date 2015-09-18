@@ -2688,9 +2688,8 @@ def list_images(user, backend_id, term=None):
                               for image, name in config.DOCKER_IMAGES.items()]
             rest_images += conn.list_images()
         else:
+            log.info("testing  MING SHENGG")
             rest_images = conn.list_images()
-            f = open('imagesList.txt', 'w')
-            print >>f, rest_images
             starred_images = [image for image in rest_images
                               if image.id in starred]
         if term and conn.type in config.EC2_PROVIDERS:
