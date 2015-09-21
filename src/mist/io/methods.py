@@ -480,14 +480,15 @@ def _add_backend_coreos(user, title, provider, params):
 
     return backend_id, mon_dict
 
+# Dimension Data backend method
 def _add_backend_dimensiondata(title, provider, params):
     username = params.get('username', '')
-    if not api_key:
+    if not username:
        raise RequiredParameterMissingError('username')
     password = params.get('password', '')
-    if not api_key:
+    if not password:
        raise RequiredParameterMissingError('password')
-    region = params.get('region', 'dd-ap')
+    region = params.get('region', '')
 
     backend = model.Backend()
     backend.title = title
