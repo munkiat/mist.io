@@ -86,3 +86,13 @@ Finally, you can start, stop or restart a specific process::
     ./bin/supervisorctl restart uwsgi
 
 Point your browser to http://127.0.0.1:8000 and you are ready to roll!
+
+Dimension Data Region Codes
+---------------------------
+North America: dd-na
+Europe: dd-eu
+Australia (includes New Zealand): dd-au
+Africa: dd-af
+Asia Pacific: dd-ap
+South America: dd-latam
+Canada: dd-ca
