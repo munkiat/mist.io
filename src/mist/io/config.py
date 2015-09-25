@@ -431,6 +431,11 @@ SUPPORTED_PROVIDERS = [
     {
         'title': 'VMware vCloud',
         'provider' : Provider.VCLOUD
+    },
+    # Dimension Data
+    {
+        'title': 'Dimension Data',
+        'provider' : Provider.DIMENSIONDATA
     }
 ]
 

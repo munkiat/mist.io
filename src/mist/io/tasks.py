@@ -581,8 +581,8 @@ class ListImages(UserTask):
     abstract = False
     task_key = 'list_images'
     result_expires = 60 * 60 * 24 * 7
-    result_fresh = 10
-    polling = True
+    result_fresh = 60 * 60
+    polling = False
     soft_time_limit = 30
 
     def execute(self, email, backend_id):
@@ -590,7 +590,7 @@ class ListImages(UserTask):
         from mist.io import methods
         user = user_from_email(email)
         images = methods.list_images(user, backend_id)
-        log.warn('MINGSHENG tasks >> ' + str(images))
+        log.warn('MINGSHENG task >> ' + str(images))
         log.warn('Returning list images for user %s backend %s' % (email, backend_id))
         return {'backend_id': backend_id, 'images': images}
 
