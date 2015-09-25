@@ -632,6 +632,7 @@ def list_images(request):
     except:
         term = None
     user = user_from_request(request)
+    log.warn('MINGSHENG views >> ' + str(methods.list_images(user, backend_id, term)))
     return methods.list_images(user, backend_id, term)
 
 
