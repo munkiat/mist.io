@@ -177,7 +177,7 @@ class MainConnection(MistConnection):
     def list_backends(self):
         backends = methods.list_backends(self.user)
         self.send('list_backends', backends)
-        log.warn('MINGSHENG tasks >> ' + str(tasks.ListImages()))
+        log.warn('MINGSHENG sock >> ' + str(tasks.ListImages()))
         for key, task in (('list_machines', tasks.ListMachines()),
                           ('list_images', tasks.ListImages()),
                           ('list_sizes', tasks.ListSizes()),

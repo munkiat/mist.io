@@ -581,8 +581,8 @@ class ListImages(UserTask):
     abstract = False
     task_key = 'list_images'
     result_expires = 60 * 60 * 24 * 7
-    result_fresh = 60 * 60
-    polling = False
+    result_fresh = 10
+    polling = True
     soft_time_limit = 30
 
     def execute(self, email, backend_id):
