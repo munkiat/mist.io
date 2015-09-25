@@ -484,10 +484,10 @@ def _add_backend_coreos(user, title, provider, params):
 def _add_backend_dimensiondata(title, provider, params):
     username = params.get('username', '')
     if not username:
-       raise RequiredParameterMissingError('username')
+        raise RequiredParameterMissingError('username')
     password = params.get('password', '')
     if not password:
-       raise RequiredParameterMissingError('password')
+        raise RequiredParameterMissingError('password')
     region = params.get('region', '')
 
     backend = model.Backend()
@@ -2687,8 +2687,8 @@ def list_images(user, backend_id, term=None):
                               for image, name in config.DOCKER_IMAGES.items()]
             rest_images += conn.list_images()
         else:
-            log.error("testing  MING SHENGG")
             rest_images = conn.list_images()
+            log.error("MINGSHENG - ELSE" + len(rest_images))
             starred_images = [image for image in rest_images
                               if image.id in starred]
         if term and conn.type in config.EC2_PROVIDERS:
